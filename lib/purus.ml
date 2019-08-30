@@ -1,3 +1,5 @@
+module Ctx = Ctx
+
 exception Unbound_variable of string
 
 exception Invalid_input_type of string
@@ -30,15 +32,15 @@ let shift d x0 e0 =
   let rec go e c =
     match e with
     | Lam (x, _A, b) ->
-        let c' = if x == x0 then c + 1 else c in
+        let c' = if x = x0 then c + 1 else c in
         Lam (x, go _A c, go b c')
     | Pi (x, _A, _B) ->
-        let c' = if x == x0 then c + 1 else c in
+        let c' = if x = x0 then c + 1 else c in
         Pi (x, go _A c, go _B c')
     | App (f, a) ->
         App (go f c, go a c)
     | Var (x, n) ->
-        let n' = if x == x0 && n >= c then n + d else n in
+        let n' = if x = x0 && n >= c then n + d else n in
         Var (x, n')
     | Uni l ->
         Uni l
@@ -48,17 +50,17 @@ let shift d x0 e0 =
 let rec subst x n e' e =
   match e with
   | Lam (x', _A, b) ->
-      let n' = if x == x' then n + 1 else n in
+      let n' = if x = x' then n + 1 else n in
       let b' = subst x n' (shift 1 x' e') b in
       Lam (x', subst x n e' _A, b')
   | Pi (x', _A, _B) ->
-      let n' = if x == x' then n + 1 else n in
+      let n' = if x = x' then n + 1 else n in
       let _B' = subst x n' (shift 1 x' e') _B in
       Pi (x', subst x n e' _A, _B')
   | App (f, a) ->
       App (subst x n e' f, subst x n e' a)
   | Var (x', n') ->
-      if x == x' && n == n' then e' else e
+      if x = x' && n = n' then e' else e
   | Uni l ->
       Uni l
 
@@ -80,12 +82,12 @@ let rec is_free (x, n) ex =
     match e with
     | Lam (x', _A, b) ->
         let n' = n + 1 in
-        go _A || if x == x' then is_free (x, n') b else go b
+        go _A || if x = x' then is_free (x, n') b else go b
     | Pi (x', _A, _B) ->
         let n' = n + 1 in
-        go _A || if x == x' then is_free (x, n') _B else go _B
+        go _A || if x = x' then is_free (x, n') _B else go _B
     | Var (x', n') ->
-        x == x' && n == n'
+        x = x' && n = n'
     | App (f, a) ->
         go f || go a
     | _ ->
@@ -102,7 +104,7 @@ let rec normalize e =
       | App (f, a) -> (
           let a' = whnf a in
           match a' with
-          | Var (x', n') when x == x' && 0 == n' && not (is_free (x', n') f) ->
+          | Var (x', n') when x = x' && 0 = n' && not (is_free (x', n') f) ->
               (* Eta-reduction *)
               shift (-1) x f
           | _ ->
@@ -132,7 +134,7 @@ let rec type_with (ctx : unit expr Ctx.ctx) (e : unit expr) : unit expr =
   | Var (x, n) -> (
     match Ctx.lookup x n ctx with
     | None ->
-        raise (Unbound_variable x)
+        Ctx.print ctx ; raise (Unbound_variable x)
     | Some a ->
         a )
   | Lam (x, _A, b) ->
@@ -140,7 +142,7 @@ let rec type_with (ctx : unit expr Ctx.ctx) (e : unit expr) : unit expr =
       let ctx' = Ctx.map (fun (s, e) -> (s, shift 1 x e)) (Ctx.add x _A ctx) in
       let _B = type_with ctx' b in
       let p = Pi (x, _A, _B) in
-      let _t = type_with ctx p in
+      let _ = type_with ctx p in
       p
   | Pi (x, _A, _B) ->
       let eS = whnf (type_with ctx _A) in
@@ -163,7 +165,7 @@ let rec type_with (ctx : unit expr Ctx.ctx) (e : unit expr) : unit expr =
             raise (Typecheck_error "not a function")
       in
       let _A' = type_with ctx a in
-      if _A == _A' then
+      if _A = _A' then
         let a' = shift 1 x a in
         let _B' = subst x 0 a' _B in
         shift (-1) x _B'
@@ -171,8 +173,4 @@ let rec type_with (ctx : unit expr Ctx.ctx) (e : unit expr) : unit expr =
 
 let type_of = type_with (Ctx.empty ())
 
-let term = Lam ("a", Uni 0, Lam ("x", Var ("a", 0), Var ("x", 0)))
-
-let run () =
-  let _ = type_of term in
-  print_endline "Hello, Purus!"
+let run () = print_endline "Hello, Purus!"

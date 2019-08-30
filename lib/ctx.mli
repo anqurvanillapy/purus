@@ -1,6 +1,8 @@
 type 'a ctx
 (** Typing context *)
 
+val print : 'a ctx -> unit
+
 val empty : unit -> 'a ctx
 (** Returns an empty context *)
 

@@ -1,11 +1,18 @@
+module Ctx = Ctx
+
 val run : unit -> unit
 
-type variable
+type variable = string * int
 
-type universe
+type universe = int
 
-type 'a expr
 (** Syntax tree for expressions *)
+type 'a expr =
+  | Uni of universe
+  | Var of variable
+  | App of 'a expr * 'a expr
+  | Lam of string * 'a expr * 'a expr
+  | Pi of string * 'a expr * 'a expr
 
 val axiom : universe -> universe
 
