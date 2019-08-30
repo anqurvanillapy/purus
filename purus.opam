@@ -1,0 +1,8 @@
+opam-version: "2.0.5"
+version: "0.1.0"
+maintainer: "anqurvanillapy@gmail.com"
+authors: ["AnqurVanillapy"]
+license: "MIT"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
