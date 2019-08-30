@@ -3,8 +3,10 @@ module Ctx = Ctx
 val run : unit -> unit
 
 type variable = string * int
+(** Variable with de Bruijn index *)
 
 type universe = int
+(** Universal level *)
 
 (** Syntax tree for expressions *)
 type 'a expr =
@@ -15,8 +17,10 @@ type 'a expr =
   | Pi of string * 'a expr * 'a expr
 
 val axiom : universe -> universe
+(** The Axiom for a universe *)
 
 val rule : 'a expr -> 'a expr -> 'a expr
+(** The Rule for two universes *)
 
 val shift : int -> string -> 'a expr -> 'a expr
 (** `shift n x` adds `n` to the index of all free variables named `x` within an
