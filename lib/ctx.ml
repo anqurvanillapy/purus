@@ -20,9 +20,7 @@ let lookup k n0 c =
         loop kvs (n - 1)
     | (_, v) :: _, n when n = 0 ->
         Some v
-    | (_, _) :: _, _ ->
-        None
-    | [], _ ->
+    | _ ->
         None
   in
   loop c n0

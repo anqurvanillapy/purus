@@ -1,2 +1,6 @@
 (library
  (name purus))
+
+(ocamllex lexer)
+
+(ocamlyacc parser)
