@@ -1,5 +1,4 @@
 open Abs
-module Ctx = Ctx
 
 val axiom : universe -> universe
 (** The Axiom for a universe *)

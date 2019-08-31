@@ -1,5 +1,4 @@
 open Abs
-module Ctx = Ctx
 
 exception Unbound_variable of string
 

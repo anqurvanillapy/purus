@@ -1,4 +1,6 @@
 open Purus
+open Abs
+open Typecheck
 
 let test_basic () =
   let u0 = Uni 0 in
