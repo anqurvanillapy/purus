@@ -1,13 +1,12 @@
-type variable = string * int
-(** Variable with de Bruijn index *)
+include Abs_types
 
-type universe = int
-(** Universal level *)
-
-(** Syntax tree for expressions *)
-type expr =
-  | Uni of universe
-  | Var of variable
-  | App of expr * expr
-  | Lam of string * expr * expr
-  | Pi of string * expr * expr
+let rec show e =
+  match e with
+  | Uni i ->
+      "#" ^ string_of_int i
+  | Var (s, n) ->
+      s ^ "@" ^ string_of_int n
+  | App (e0, e1) ->
+      show e0 ^ " " ^ show e1
+  | Pi (s, e0, e1) | Lam (s, e0, e1) ->
+      "λ(" ^ s ^ " : " ^ show e0 ^ ")" ^ " -> " ^ show e1
