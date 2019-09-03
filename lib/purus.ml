@@ -2,21 +2,9 @@ module Ctx = Ctx
 module Abs = Abs
 module Typecheck = Typecheck
 
-let infile_name = ref None
-
-let specs = []
-
-let usage = "usage: purus [FILE]"
-
-let _ = Arg.parse specs (fun n -> infile_name := Some n) usage
-
-let run () =
+let run ~file =
   let fname, ic =
-    match !infile_name with
-    | Some f ->
-        (f, open_in_bin f)
-    | None ->
-        ("<stdin>", stdin)
+    match file with Some f -> (f, open_in_bin f) | None -> ("<stdin>", stdin)
   in
   let lexbuf = Lexing.from_channel ic in
   try
