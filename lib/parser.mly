@@ -1,6 +1,6 @@
 %token<int> NUMBER
 %token<string> IDENT
-%token COLON LAMBDA RIGHT_ARROW UNIVERSE DOT
+%token COLON LAMBDA RIGHT_ARROW UNIVERSE SEMICOLON
 %token LPAREN RPAREN
 %token EOF
 
@@ -15,7 +15,7 @@
 %%
 
 top
-    : expr DOT { Some $1 }
+    : expr SEMICOLON { Some $1 }
     | EOF { None }
     ;
 

@@ -6,7 +6,7 @@ let infile_name = ref None
 
 let specs = []
 
-let usage = "usage: purus [file]"
+let usage = "usage: purus [FILE]"
 
 let _ = Arg.parse specs (fun n -> infile_name := Some n) usage
 
