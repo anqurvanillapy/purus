@@ -44,6 +44,12 @@ rule read =
   | '(' { depth := !depth + 1; last_token := LPAREN; !last_token }
   | ')' { depth := !depth - 1; last_token := RPAREN; !last_token }
   | ';' { last_token := SEMICOLON; !last_token }
+  | "(*" { comment lexbuf; read lexbuf }
   | eof { last_token := EOF; !last_token }
   | _ { raise (Syntax_error ("unexpected character: " ^ Lexing.lexeme lexbuf))
       }
+
+and comment =
+  parse
+  | "*)" {}
+  | _ { comment lexbuf }
